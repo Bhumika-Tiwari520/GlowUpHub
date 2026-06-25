@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+html, body, [class*="css"] {
+    font-family: 'Poppins', sans-serif;
+}
+
+.stApp {
+    background: linear-gradient(
+        180deg,
+        #050816 0%,
+        #081225 50%,
+        #0a1224 100%
+    );
+    color: white;
+}
+
+h1 {
+    color: #c084fc;
+    text-align: center;
+}
+
+.stButton button {
+    width: 100%;
+    border-radius: 15px;
+    background: linear-gradient(
+        90deg,
+        #7c3aed,
+        #a855f7
+    );
+    color: white;
+    border: none;
+    font-weight: 600;
+}
+
+.card {
+    background: rgba(255,255,255,0.05);
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
