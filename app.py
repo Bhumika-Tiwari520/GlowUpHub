@@ -1,85 +1,61 @@
+
 import streamlit as st
-import random
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+from datetime import date
 
-# Page config
-st.set_page_config(page_title="GlowUpHub ✨", layout="centered")
+st.set_page_config(page_title='Aura AI', page_icon='💜', layout='wide')
 
-# Simple girly aesthetic styling
-st.markdown("""
-    <style>
-    body {
-        background-color: #fff0f5;
-    }
-    h1, h2, h3 {
-        color: #ff69b4;
-        text-align: center;
-    }
-    .stButton>button {
-        background-color: #ffb6c1;
-        color: white;
-        border-radius: 10px;
-        border: none;
-        padding: 8px 16px;
-    }
-    </style>
-""", unsafe_allow_html=True)
+st.markdown('''
+<style>
+.stApp{background:linear-gradient(180deg,#050816,#0b1020);}
+</style>
+''', unsafe_allow_html=True)
 
-# Title
-st.title("🌸 GlowUpHub ✨")
+st.session_state.setdefault('chat', [])
+st.session_state.setdefault('journal', [])
 
-# Sidebar menu
-menu = st.sidebar.selectbox("💖 Menu", ["Home", "Mood", "Affirmation", "Fun"])
+st.sidebar.title('💜 Aura AI')
+page = st.sidebar.radio('Navigation',['Dashboard','AI Chat','Mood Journal','Burnout Detector','Study Balance','Focus Mode','Safety Tools','Wellness Hub','Progress Insights','Achievements','Settings'])
 
-# ---------------- HOME ----------------
-if menu == "Home":
-    st.header("Welcome bestie 💕")
-    st.write("🌈 Welcome to your glow-up space ✨💖")
+if page=='Dashboard':
+    st.title('💜 Aura AI Dashboard')
+    c1,c2,c3,c4=st.columns(4)
+    c1.metric('Mood','84%')
+    c2.metric('Focus','78%')
+    c3.metric('Balance','81%')
+    c4.metric('Stress','32%')
 
-# ---------------- MOOD ----------------
-elif menu == "Mood":
-    st.header("💭 Mood Check")
-    mood = st.selectbox("How are you feeling? 💖", ["Happy 😊", "Sad 😢", "Tired 😴", "Frustrated 😤"])
+elif page=='AI Chat':
+    st.title('🤖 Offline Chatbot')
+    for r,m in st.session_state.chat:
+        st.write(f'**{r}:** {m}')
+    msg = st.chat_input('Type here')
+    if msg:
+        st.session_state.chat.append(('You',msg))
+        st.session_state.chat.append(('Aura AI','You are doing great. Keep moving forward 💜'))
+        st.rerun()
 
-    if mood == "Happy 😊":
-        st.success("Yay! Keep shining and spreading positivity ✨💖")
-    elif mood == "Sad 😢":
-        st.info("It's okay to feel sad. Better days are coming 💕🌈")
-    elif mood == "Tired 😴":
-        st.warning("Take some rest bestie! You deserve it 🛌💖")
-    elif mood == "Frustrated 😤":
-        st.error("Take a deep breath. You got this 💪✨")
+elif page=='Mood Journal':
+    st.title('📔 Mood Journal')
+    mood=st.selectbox('Mood',['Happy','Calm','Anxious','Stressed','Sad'])
+    txt=st.text_area('Entry')
+    if st.button('Save'):
+        st.session_state.journal.append({'Mood':mood,'Entry':txt})
+    if st.session_state.journal:
+        st.dataframe(pd.DataFrame(st.session_state.journal))
 
-# ---------------- AFFIRMATION ----------------
-elif menu == "Affirmation":
-    st.header("🌟 Daily Motivation")
+elif page=='Burnout Detector':
+    st.title('🔥 Burnout Detector')
+    sleep=st.slider('Sleep',0,12,6)
+    score=max(0,min(100,(8-sleep)*10))
+    fig=go.Figure(go.Indicator(mode='gauge+number',value=score))
+    st.plotly_chart(fig,use_container_width=True)
 
-    affirmations = [
-        "I am confident and strong 💖",
-        "I glow differently when I take care of myself ✨",
-        "I believe in my dreams 🌸",
-        "I am becoming my best version 💕",
-        "I deserve happiness and success 🌈"
-    ]
+elif page=='Study Balance':
+    st.title('📚 Study Balance')
+    st.metric('NDA Countdown',(date(2027,4,15)-date.today()).days)
 
-    if st.button("Give me motivation 💫"):
-        st.success(random.choice(affirmations))
-
-# ---------------- FUN ----------------
-elif menu == "Fun":
-    st.header("🎀 Fun Glow-Up Tips")
-
-    tips = [
-        "💧 Drink more water",
-        "🚶‍♀️ Take a short walk",
-        "🔥 Stay consistent",
-        "😊 Be happy",
-        "🌸 Keep smiling",
-        "💖 Love yourself"
-    ]
-
-    if st.button("Glow-up tip ✨"):
-        st.success(random.choice(tips))
-
-# Footer
-st.markdown("---")
-st.markdown("Made with 💖 using Streamlit ✨")
+else:
+    st.title(page)
